@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { resetGame } from '../redux/reducers/gameSlice';
 import { playSound } from '../helpers/SoundUtility';
@@ -18,42 +18,53 @@ import { colorPlayer } from '../helpers/PlotData';
 
 const WinModal = ({ winner }) => {
   const dispatch = useDispatch();
-  const [visible, setVisible] = useState(!!winner);
 
-  useEffect(() => {
-    setVisible(!!winner);
-  }, [winner]);
+  // Use winner directly for visibility, like MenuModal does
+  const isVisible = winner !== null;
+  
+  console.log('WinModal render:', { winner, isVisible });
 
   const handleNewGame = () => {
+    console.log('WinModal: New Game pressed');
     dispatch(resetGame());
     dispatch(announceWinner(null));
     playSound('game_start');
   };
 
   const handleHome = () => {
+    console.log('WinModal: Home pressed');
     dispatch(resetGame());
     dispatch(announceWinner(null));
     resetAndNavigate('Home');
   };
 
+  const handleResume = () => {
+    console.log('WinModal: Resume pressed');
+    dispatch(announceWinner(null));
+  };
+
   return (
     <Modal
       style={styles.modal}
-      isVisible={visible}
+      isVisible={isVisible}
       backdropColor="black"
       backdropOpacity={0.8}
       animationIn="zoomIn"
       animationOut="zoomOut"
-      onBackdropPress={() => {}}
+      onBackdropPress={handleResume}
+      onModalShow={() => console.log('WinModal: Modal shown')}
+      onModalHide={() => console.log('WinModal: Modal hidden')}
     >
       <LinearGradient
         colors={['#0f0c29', '#302b63', '#24243e']}
         style={styles.gradientContainer}
       >
         <View style={styles.content}>
-          <View style={styles.pileContainer}>
-            <Pile player={winner} color={colorPlayer[winner-1]} />
-          </View>
+          {winner !== null && (
+            <View style={styles.pileContainer}>
+              <Pile player={winner} color={colorPlayer[winner-1]} />
+            </View>
+          )}
 
           <Text style={styles.congratsText}>
             Congratulations! Player {winner}
@@ -73,8 +84,10 @@ const WinModal = ({ winner }) => {
             style={styles.fireworkAnimation}
           />
 
-          <GradientButton title="NEW GAME" onPress={handleNewGame} />
-          <GradientButton title="HOME" onPress={handleHome} />
+          <View style={styles.buttonContainer}>
+            <GradientButton title="NEW GAME" onPress={handleNewGame} />
+            <GradientButton title="HOME" onPress={handleHome} />
+          </View>
         </View>
       </LinearGradient>
 
@@ -109,6 +122,12 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
+  buttonContainer: {
+    width: '100%',
+    alignItems: 'center',
+    zIndex: 10,
+    pointerEvents: 'auto',
+  },
   pileContainer: {
     width: 90,
     height: 40,
@@ -128,8 +147,9 @@ const styles = StyleSheet.create({
     height: 200,
     width: 500,
     position: 'absolute',
-    zIndex: -1,
+    zIndex: -5,
     marginTop: 20,
+    pointerEvents: 'none',
   },
   girlAnimation: {
     height: 500,
@@ -137,6 +157,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -200,
     right: -120,
-    zIndex: 99,
+    zIndex: 1,
+    pointerEvents: 'none',
   },
 });

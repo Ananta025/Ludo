@@ -142,7 +142,7 @@ const LudoBoardScreen = () => {
       )}
 
 
-      {winner !== null && <WinModal winner={winner} />}
+      <WinModal winner={winner} />
     </Wrapper>
   )
 }

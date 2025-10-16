@@ -43,7 +43,8 @@ const Dice = React.memo(({ color, rotate, player, data }) => {
   const [diceRolling, setDiceRolling] = useState(false);
 
   const handleDicePress = async () => {
-    const newDiceNo = Math.floor(Math.random() * 6) + 1;
+    // const newDiceNo = Math.floor(Math.random() * 6) + 1;
+    const newDiceNo = 6;
     playSound('dice_roll');
     setDiceRolling(true);
     await delay(800);
@@ -52,7 +53,8 @@ const Dice = React.memo(({ color, rotate, player, data }) => {
 
     // Get all valid moves
     const validMoves = [];
-    const piecesOnBoard = data.filter(p => p.pos > 0 && p.pos < 57);
+    // Include pieces that are on board OR in victory lane (travelCount < 57 means not finished)
+    const piecesOnBoard = data.filter(p => p.pos > 0 && p.travelCount < 57);
     const piecesAtHome = data.filter(p => p.pos === 0);
 
     // Check home pieces (can only move with 6)
@@ -70,8 +72,11 @@ const Dice = React.memo(({ color, rotate, player, data }) => {
     piecesOnBoard
       .filter(p => p.travelCount + newDiceNo <= 57)
       .forEach(piece => {
+        // Check if piece is in victory lane based on travelCount (51+ means entered victory path)
+        const isInVictoryLane = piece.travelCount >= 51;
+
         validMoves.push({
-          type: 'board',
+          type: isInVictoryLane ? 'victory' : 'board',
           piece: piece,
           playerNo: player,
         });
@@ -100,9 +105,9 @@ const Dice = React.memo(({ color, rotate, player, data }) => {
           }),
         );
       } else {
-        // Move piece on board
+        // Move piece on board or in victory lane
         dispatch(
-          handleForwardThunk(player, move.piece.id, move.piece.pos + newDiceNo),
+          handleForwardThunk(player, move.piece.id, move.piece.pos)
         );
       }
 
@@ -116,14 +121,35 @@ const Dice = React.memo(({ color, rotate, player, data }) => {
         dispatch(unfreezeDice());
       }
     } else {
-      // Multiple valid moves - enable both selections based on what's available
+      // Multiple valid moves - enable selections based on what's available
       const hasHomePieces = newDiceNo === 6 && piecesAtHome.length > 0;
-      const hasBoardPieces = piecesOnBoard.filter(p => p.travelCount + newDiceNo <= 57).length > 0;
+      const hasBoardPieces = piecesOnBoard.filter(p => {
+        const canMove = p.travelCount + newDiceNo <= 57;
+        if (!canMove) return false;
+        
+        // Check if piece is NOT in victory lane (regular board pieces)
+        // Use travelCount to determine if piece has entered victory path (51+ moves)
+        const isInVictoryLane = p.travelCount >= 51;
+        
+        return !isInVictoryLane; // Only count non-victory lane pieces for cell selection
+      }).length > 0;
 
+      const hasVictoryPieces = piecesOnBoard.filter(p => {
+        const canMove = p.travelCount + newDiceNo <= 57;
+        if (!canMove) return false;
+        
+        // Check if piece IS in victory lane
+        // Use travelCount to determine if piece has entered victory path (51+ moves)
+        const isInVictoryLane = p.travelCount >= 51;
+        
+        return isInVictoryLane; // Only count victory lane pieces
+      }).length > 0;
+
+      // Enable appropriate selections
       if (hasHomePieces) {
         dispatch(enablePileSelection({ playerNo: player }));
       }
-      if (hasBoardPieces) {
+      if (hasBoardPieces || hasVictoryPieces) {
         dispatch(enableCellSelection({ playerNo: player }));
       }
     }
@@ -150,7 +176,7 @@ const Dice = React.memo(({ color, rotate, player, data }) => {
       ).start();
     };
     animateArrow();
-  }, [currentPlayerChance, isDiceRolled]);
+  }, [arrowAnim, currentPlayerChance, isDiceRolled]);
 
 
   return (

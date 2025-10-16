@@ -14,7 +14,7 @@ const SplashScreen = () => {
         prepareNavigation()
         setTimeout(() => {
             resetAndNavigate('Home')
-        }, 700);
+        }, 1500);
     }, [])
 
     useEffect(() => {

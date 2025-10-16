@@ -35,14 +35,35 @@ export const handleForwardThunk = (playerNo, id, pos) => async (dispatch, getSta
     return;
   }
 
+  const playerTurnPoint = turningPoints[playerNo - 1];
+  const playerVictoryStart = victoryStart[playerNo - 1];
+
   for (let i = 0; i < diceNo; i++) {
     const updatedState = getState();
     const playerPiece = updatedState.game[`player${playerNo}`].find(item => item.id === id);
-    let path = playerPiece.pos + 1;
+    let currentPos = playerPiece.pos;
+    let path = currentPos + 1;
 
-    const playerTurnPoint = turningPoints[playerNo - 1];
-    if (path === playerTurnPoint) path = victoryStart[playerNo - 1];
-    if (path > 52) path = path - 52;
+    // Determine if piece is entering or already in victory lane based on travelCount
+    if (travelCount >= 51) {
+      const victoryLaneStep = travelCount - 51;
+      path = playerVictoryStart + victoryLaneStep;
+    } else {
+      // Check if piece will enter victory lane on this step
+      if (travelCount + 1 === 51 && currentPos === playerTurnPoint) {
+        // About to enter victory lane
+        path = playerVictoryStart;
+      } else {
+        // Normal board movement with wrapping
+        if (path > 52) {
+          path = path - 52; // Wrap around the board
+        }
+        // Double-check turning point logic for edge cases
+        if (travelCount + 1 >= 51 && path === playerTurnPoint) {
+          path = playerVictoryStart;
+        }
+      }
+    }
 
     finalPath = path;
     travelCount += 1;
@@ -65,9 +86,13 @@ export const handleForwardThunk = (playerNo, id, pos) => async (dispatch, getSta
   const uniqueIds = new Set(ids);
   const areDifferentIds = uniqueIds.size > 1;
 
+  // Use travelCount (51+ means entered victory path) as primary indicator
+  const isInVictoryLaneAtEnd = travelCount >= 51;
+
   if (SafeSpots.includes(finalPath) || StarSpots.includes(finalPath)) playSound('safe_spot');
 
-  if (areDifferentIds && !SafeSpots.includes(finalPath) && !StarSpots.includes(finalPath)) {
+  // Handle collisions only if not in victory lane, not on safe spots, and different players
+  if (areDifferentIds && !SafeSpots.includes(finalPath) && !StarSpots.includes(finalPath) && !isInVictoryLaneAtEnd) {
     const enemyPiece = finalPlot.find(i => i.id[0] !== id[0]);
     const enemyAlpha = enemyPiece.id[0];
     const enemyNo = ['A', 'B', 'C', 'D'].indexOf(enemyAlpha) + 1;
