@@ -127,38 +127,33 @@ const HomeScreen = () => {
         <Image source={Logo} style={styles.img} />
       </View>
 
+      <View style={styles.buttonsContainer}>
+        {currentPosition.length !== 0 && renderButtons('RESUME', handleResumePress)}
+        {renderButtons('NEW GAME', handleNewGamePress)}
+        {renderButtons('VS CPU', () => Alert.alert('Coming Soon! Click new game'))}
+        {renderButtons('2 VS 2', () => Alert.alert('Coming Soon! Click new game'))}
+      </View>
 
-      {currentPosition.length !== 0 && renderButtons('RESUME', handleResumePress)}
-      {renderButtons('NEW GAME', handleNewGamePress)}
-      {renderButtons('VS CPU', () => Alert.alert('Comming Soon! Click new game'))}
-      {renderButtons('2 VS 2', () => Alert.alert('Comming Soon! Click new game'))}
-
-
-
-       
-
-        <Animated.View
+      <Animated.View
         style={[styles.witchContainer, {transform: [{translateX: witchAnim}, {scaleX: scaleXAnim}]}]}
+      >
+        <Pressable
+          onPress={()=>{
+            const random = Math.floor(Math.random() * 3) + 1;
+            playSound(`girl${random}`)
+          }}
         >
-            <Pressable
-            onPress={()=>{
-                const random = Math.floor(Math.random() * 3) +1 ;
-                playSound(`girl${random}`)
-            }}
-            >
-                <LottieView 
-                hardwareAccelerationAndroid
-                source={Witch}
-                autoPlay
-                speed={1}
-                style={styles.witch}
-                />
-            </Pressable>
-        </Animated.View>
+          <LottieView 
+            hardwareAccelerationAndroid
+            source={Witch}
+            autoPlay
+            speed={1}
+            style={styles.witch}
+          />
+        </Pressable>
+      </Animated.View>
 
-
-
-        <Text style={styles.artist}>Designed by - Ananta</Text>
+      <Text style={styles.artist}>Designed by - Ananta</Text>
     </Wrapper>
   )
 }
@@ -167,25 +162,32 @@ export default HomeScreen
 
 const styles = StyleSheet.create({
     mainContainer:{
-        justifyContent: 'flex-start',
-
+        flex: 1,
+        justifyContent: 'space-between',
+        paddingVertical: 15,
     },
     imgContainer:{
-        width : deviceWidth * 0.6,
-        height: deviceHeight * 0.2,
+        width: deviceWidth * 0.6,
+        height: deviceHeight * 0.25,
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 40,
+        marginTop: 10,
+        marginBottom: 5,
         alignSelf: 'center'
     },
     img: {
-        width: '100%',
-        height: '100%',
+        width: '80%',
+        height: '80%',
         resizeMode: 'contain'
     },
+    buttonsContainer: {
+        flex: 1,
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        gap: 12,
+    },
     artist: {
-        position: 'absolute',
-        bottom: 30,
+        alignSelf: 'center',
         color: 'white',
         fontWeight: 'bold',
         opacity: 0.7,
@@ -193,13 +195,13 @@ const styles = StyleSheet.create({
     },
     witchContainer:{
         position: 'absolute',
-        top: '75%',
-        left: '24%',  
+        bottom: deviceHeight * 0.08,
+        alignItems: 'center',
+        zIndex: -1,
     },
     witch:{
-        height: 250,
-        width: 250,
+        height: Math.min(250, deviceHeight * 0.25),
+        width: Math.min(250, deviceHeight * 0.25),
         transform: [{rotate: '25deg'}]
     }
-
 })

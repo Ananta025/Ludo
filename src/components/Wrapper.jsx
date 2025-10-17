@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, ImageBackground } from 'react-native'
+import { StyleSheet, ImageBackground } from 'react-native'
 import React from 'react'
-import BG from '../assets/images/bg.jpeg'
+import BG from '../assets/images/bg.png'
 import {deviceWidth, deviceHeight} from '../constants/Scaling'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     container:{
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   SafeAreaView:{
     height: deviceHeight,
