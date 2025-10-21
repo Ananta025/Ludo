@@ -3,19 +3,24 @@ import React, { useCallback } from 'react';
 import Modal from 'react-native-modal';
 import { useDispatch } from 'react-redux';
 import { playSound } from '../helpers/SoundUtility';
-import { resetGame } from '../redux/reducers/gameSlice';
+import { resetGame } from '../redux/ludo/ludoSlice';
+import { resetGame as resetSnakeLadderGame } from '../redux/snakeladder/snakeLadderSlice';
 import { goBack } from '../helpers/NavigationUtil';
 import LinearGradient from 'react-native-linear-gradient';
 import GradientButton from './GradientButton';
 
-const MenuModal = ({ visible, onPressHide }) => {
+const MenuModal = ({ visible, onPressHide, gameType = 'ludo' }) => {
   const dispatch = useDispatch();
 
   const handleNewGame = useCallback(() => {
-    dispatch(resetGame());
+    if (gameType === 'snakeladder') {
+      dispatch(resetSnakeLadderGame());
+    } else {
+      dispatch(resetGame());
+    }
     playSound('game_start');
     onPressHide();
-  }, [dispatch, onPressHide]);
+  }, [dispatch, onPressHide, gameType]);
 
   const handleHome = useCallback(() => {
     goBack();

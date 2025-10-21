@@ -1,7 +1,8 @@
 import { Animated, Easing, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React,{memo, useEffect, useMemo, useRef} from 'react'
 import { useSelector } from 'react-redux';
-import { selectCellSelection, selectPocketPileSelection, selectDiceNo } from '../redux/reducers/gameSelectors';
+import { selectCellSelection, selectPocketPileSelection, selectDiceNo } from '../redux/ludo/ludoSelectors';
+import { selectSnakeLadderPileSelection, selectSnakeLadderDiceNo } from '../redux/snakeladder/snakeLadderSelectors';
 import {Colors} from '../constants/Colors'
 import PileGreen from '../assets/images/piles/green.png'
 import PileRed from '../assets/images/piles/red.png'
@@ -9,12 +10,48 @@ import PileYellow from '../assets/images/piles/yellow.png'
 import PileBlue from '../assets/images/piles/blue.png'
 import {Svg, Circle} from 'react-native-svg'
 
-const Pile = ({cell, pieceId, color, player, onPress}) => {
+const getPileImageByColor = (color) => {
+  switch (color) {
+    case Colors.green:
+      return PileGreen;
+    case Colors.red:
+      return PileRed;
+    case Colors.yellow:
+      return PileYellow;
+    case Colors.blue:
+      return PileBlue;
+    case '#FF5252': // Snake & Ladder red
+      return PileRed;
+    case '#2196F3': // Snake & Ladder blue
+      return PileBlue;
+    default:
+      return PileGreen;
+  }
+};
+
+const Pile = ({cell, pieceId, color, player, onPress, variant = 'default', size = 'normal', gameType = 'ludo'}) => {
   const rotation = useRef(new Animated.Value(0)).current;
-  const currentPlayerPileSelection = useSelector(selectPocketPileSelection);
-  const currentPlayerCellSelection = useSelector(selectCellSelection);
-  const diceNo = useSelector(selectDiceNo);
-  const playerPieces = useSelector(state => state.game[`player${player}`])
+  
+  // Use different selectors based on game type
+  const ludoPileSelection = useSelector(selectPocketPileSelection);
+  const ludoCellSelection = useSelector(selectCellSelection);
+  const ludoDiceNo = useSelector(selectDiceNo);
+  
+  const snakeLadderPileSelection = useSelector(selectSnakeLadderPileSelection);
+  const snakeLadderDiceNo = useSelector(selectSnakeLadderDiceNo);
+  
+  // Select appropriate values based on game type
+  const currentPlayerPileSelection = gameType === 'ludo' ? ludoPileSelection : snakeLadderPileSelection;
+  const currentPlayerCellSelection = gameType === 'ludo' ? ludoCellSelection : -1; // No cell selection in Snake & Ladder
+  const diceNo = gameType === 'ludo' ? ludoDiceNo : snakeLadderDiceNo;
+  
+  const playerPieces = useSelector(state => {
+    if (gameType === 'ludo') {
+      return state.game[`player${player}`];
+    } else {
+      return null; // Snake & Ladder doesn't use pieces array
+    }
+  });
 
   const isPileEnabled = useMemo(
     () => player === currentPlayerPileSelection,
@@ -37,6 +74,10 @@ const Pile = ({cell, pieceId, color, player, onPress}) => {
   }, [currentPiece, diceNo]);
 
   const isSelectable = useMemo(() => {
+    if (variant === 'token') {
+      // Snake & Ladder tokens are selectable when pile selection is enabled
+      return gameType === 'snakeladder' && player === currentPlayerPileSelection;
+    }
     if (cell) {
       // For pieces on board - check if cell selection is enabled and piece can move
       return isCellEnabled && isForwardable;
@@ -44,21 +85,10 @@ const Pile = ({cell, pieceId, color, player, onPress}) => {
       // For pieces at home - check if pile selection is enabled
       return isPileEnabled;
     }
-  }, [cell, isCellEnabled, isPileEnabled, isForwardable]);
+  }, [variant, cell, isCellEnabled, isPileEnabled, isForwardable, gameType, player, currentPlayerPileSelection]);
 
   const getPileImage = useMemo(() => {
-    switch (color) {
-      case Colors.green:
-        return PileGreen;
-      case Colors.red:
-        return PileRed;
-      case Colors.yellow:
-        return PileYellow;
-      case Colors.blue:
-        return PileBlue;
-      default:
-        return PileGreen;
-    }
+    return getPileImageByColor(color);
   }, [color]);
 
   // Enhanced animation with proper cleanup
@@ -95,6 +125,24 @@ const Pile = ({cell, pieceId, color, player, onPress}) => {
     [rotation]
   );
 
+  // For Snake & Ladder token variant, render simplified version
+  if (variant === 'token') {
+    const tokenSize = size === 'small' ? 24 : 40;
+    return (
+      <TouchableOpacity
+        style={[styles.container, { width: tokenSize, height: tokenSize }]}
+        activeOpacity={1}
+        disabled={!onPress}
+        onPress={onPress}
+      >
+        <Image 
+          source={getPileImage}
+          style={[styles.tokenImage, { width: tokenSize, height: tokenSize }]}
+        />
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <TouchableOpacity
       style={styles.container}
@@ -114,7 +162,7 @@ const Pile = ({cell, pieceId, color, player, onPress}) => {
                   cy="9"
                   r="8"
                   stroke='white'
-                  strokeWidth="2"
+                  strokeWidth="3"
                   strokeDasharray="4,4"
                   strokeDashoffset="0"
                   fill="transparent"
@@ -171,6 +219,10 @@ const styles = StyleSheet.create({
     height: 32,
     position: 'absolute',
     top: -16,
+  },
+  tokenImage: {
+    position: 'relative',
+    top: 0,
   },
   dashedCircleImage: {
     width: 25,

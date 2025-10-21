@@ -1,13 +1,13 @@
 import { StyleSheet, View } from 'react-native'
 import React, {memo, useCallback, useMemo} from 'react'
-import { Colors } from '../../constants/Colors'
+import { Colors } from '../../../constants/Colors'
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentPositions } from '../../redux/reducers/gameSelectors';
-import { ArrowSpot, SafeSpots, StarSpots } from '../../helpers/PlotData';
+import { selectCurrentPositions } from '../../../redux/ludo/ludoSelectors';
+import { ArrowSpot, SafeSpots, StarSpots } from '../../../helpers/PlotData';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { RFValue } from 'react-native-responsive-fontsize';
-import Pile from '../Pile';
-import { handleForwardThunk } from '../../redux/reducers/gameAction';
+import Pile from '../../Pile';
+import { handleForwardThunk } from '../../../redux/ludo/ludoActions';
 
 
 const Cell = ({id, color}) => {

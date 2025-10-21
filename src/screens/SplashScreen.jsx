@@ -1,5 +1,5 @@
 import { StyleSheet, Animated, Image, ActivityIndicator } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {deviceWidth, deviceHeight} from '../constants/Scaling'
 import Wrapper from '../components/Wrapper'
 import Logo from '../assets/images/logo.png'
@@ -8,12 +8,12 @@ import { prepareNavigation, resetAndNavigate } from '../helpers/NavigationUtil'
 const SplashScreen = () => {
     const [isStop, setIsStop] = useState(false)
 
-    const scale =  new Animated.Value(1)
+    const scale = useRef(new Animated.Value(1)).current
 
     useEffect(() => {
         prepareNavigation()
         setTimeout(() => {
-            resetAndNavigate('Home')
+            resetAndNavigate('GameSelection')
         }, 1500);
     }, [])
 
@@ -41,7 +41,7 @@ const SplashScreen = () => {
             breathingAnimation.stop();
         }
 
-    }, [isStop])
+    }, [isStop, scale])
 
 
 

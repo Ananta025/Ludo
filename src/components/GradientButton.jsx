@@ -8,9 +8,9 @@ import { playSound } from '../helpers/SoundUtility'
 
 const iconsSize = RFValue(18);
 
-const GradientButton = ({ title, onPress, iconColor = "#d5be3e"}) => {
+const GradientButton = ({ title, onPress, iconColor = "#d5be3e", style}) => {
   return (
-    <View style={styles.mainContainer}>
+    <View style={[styles.mainContainer, style]}>
         <TouchableOpacity
         style={styles.btnContainer} 
         onPress={()=>{
@@ -31,6 +31,8 @@ const GradientButton = ({ title, onPress, iconColor = "#d5be3e"}) => {
                     title === '2 VS 2' ? <Materialicons name='group' size={iconsSize} color={iconColor} /> :
                     title === 'HOME' ? <Materialicons name='home' size={iconsSize} color={iconColor} /> :
                     title === 'USER' ? <Materialicons name='person' size={iconsSize} color={iconColor} /> :
+                    title.includes('LUDO') ? <Materialicons name='casino' size={iconsSize} color={iconColor} /> :
+                    title.includes('SNAKE') ? <Materialicons name='gamepad' size={iconsSize} color={iconColor} /> :
                     null
                 }
                 <Text style={styles.btnText}>{title}</Text>
@@ -60,14 +62,14 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 1, height: 1 },
         shadowRadius: 10,
         borderColor: '#d5be3e',
-        width: 250,
+        minWidth: 250,
     },
     btnText: {
         color: 'white',
         fontSize: RFValue(18),
-        width: '70%',
         textAlign: 'left',
         fontFamily: 'Philosopher-Bold',
+        flex: 1,
     },
     btn: {
         paddingHorizontal: 20,

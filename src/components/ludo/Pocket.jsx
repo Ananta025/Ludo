@@ -1,10 +1,10 @@
 import { StyleSheet,  View } from 'react-native'
 import React, {memo} from 'react'
-import { Colors } from '../constants/Colors'
+import { Colors } from '../../constants/Colors'
 import { useDispatch } from 'react-redux';
-import Pile from './Pile';
-import { unfreezeDice, updatePlayerPieceValue } from '../redux/reducers/gameSlice';
-import { startingPoints } from '../helpers/PlotData';
+import Pile from '../Pile';
+import { unfreezeDice, updatePlayerPieceValue } from '../../redux/ludo/ludoSlice';
+import { startingPoints } from '../../helpers/PlotData';
 
 const Pocket = ({ color, player, data }) => {
     const dispatch = useDispatch();

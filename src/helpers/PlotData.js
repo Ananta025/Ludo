@@ -35,3 +35,17 @@ export const colorPlayer = [
   Colors.yellow,
   Colors.blue,
 ];
+
+
+export const SnakeLadderSpecialSquares = [
+  1,   // Start position
+  100, // End position
+];
+
+export const SnakeLadderColors = {
+  start: Colors.green,
+  end: Colors.yellow,
+  snake: '#ffcccc',
+  ladder: '#ccddff',
+  default: 'white',
+};

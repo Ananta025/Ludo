@@ -1,7 +1,7 @@
 import { SafeSpots, StarSpots, turningPoints, victoryStart } from "../../helpers/PlotData";
 import { playSound } from "../../helpers/SoundUtility";
-import { selectCurrentPositions, selectDiceNo } from "./gameSelectors";
-import { announceWinner, disableTouch, unfreezeDice, updateFireworks, updatePlayerChance, updatePlayerPieceValue } from "./gameSlice";
+import { selectCurrentPositions, selectDiceNo } from "./ludoSelectors";
+import { announceWinner, disableTouch, unfreezeDice, updateFireworks, updatePlayerChance, updatePlayerPieceValue } from "./ludoSlice";
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 

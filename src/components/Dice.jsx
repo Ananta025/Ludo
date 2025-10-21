@@ -12,7 +12,12 @@ import {
   selectCurrentPlayerChance,
   selectDiceNo,
   selectDiceRolled,
-} from '../redux/reducers/gameSelectors';
+} from '../redux/ludo/ludoSelectors';
+import {
+  selectSnakeLadderCurrentPlayer,
+  selectSnakeLadderDiceNo,
+  selectSnakeLadderDiceRolled,
+} from '../redux/snakeladder/snakeLadderSelectors';
 import { BackgroundImage } from '../helpers/GetIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import Arrow from '../assets/images/arrow.png';
@@ -26,14 +31,44 @@ import {
   enableCellSelection,
   updatePlayerPieceValue,
   unfreezeDice,
-} from '../redux/reducers/gameSlice';
-import { handleForwardThunk } from '../redux/reducers/gameAction';
+} from '../redux/ludo/ludoSlice';
+import { updateDiceNo as updateSnakeLadderDiceNo } from '../redux/snakeladder/snakeLadderSlice';
+import { handleForwardThunk } from '../redux/ludo/ludoActions';
+import { handleSnakeLadderMoveThunk } from '../redux/snakeladder/snakeLadderActions';
 
-const Dice = React.memo(({ color, rotate, player, data }) => {
+const Dice = React.memo(({ 
+  gameType = 'ludo', 
+  color, 
+  rotate, 
+  player, 
+  data, 
+  onPress, 
+  diceNo: propDiceNo, 
+  isDiceRolled: propIsDiceRolled, 
+  currentPlayerChance: propCurrentPlayerChance 
+}) => {
   const dispatch = useDispatch();
-  const currentPlayerChance = useSelector(selectCurrentPlayerChance);
-  const isDiceRolled = useSelector(selectDiceRolled);
-  const diceNo = useSelector(selectDiceNo);
+  
+  // Use different selectors based on game type
+  const ludoCurrentPlayerChance = useSelector(selectCurrentPlayerChance);
+  const ludoIsDiceRolled = useSelector(selectDiceRolled);
+  const ludoDiceNo = useSelector(selectDiceNo);
+  
+  const snakeLadderCurrentPlayer = useSelector(selectSnakeLadderCurrentPlayer);
+  const snakeLadderIsDiceRolled = useSelector(selectSnakeLadderDiceRolled);
+  const snakeLadderDiceNo = useSelector(selectSnakeLadderDiceNo);
+  
+  // Use appropriate values based on game type
+  const currentPlayerChance = gameType === 'ludo' 
+    ? ludoCurrentPlayerChance 
+    : propCurrentPlayerChance || snakeLadderCurrentPlayer;
+  const isDiceRolled = gameType === 'ludo' 
+    ? ludoIsDiceRolled 
+    : propIsDiceRolled || snakeLadderIsDiceRolled;
+  const diceNo = gameType === 'ludo' 
+    ? ludoDiceNo 
+    : propDiceNo || snakeLadderDiceNo;
+  
   const pileIcon = BackgroundImage.GetImage(color);
   const diceIcon = BackgroundImage.GetImage(diceNo);
   const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -43,6 +78,25 @@ const Dice = React.memo(({ color, rotate, player, data }) => {
   const [diceRolling, setDiceRolling] = useState(false);
 
   const handleDicePress = async () => {
+    if (gameType === 'snakeladder') {
+      // Snake & Ladder logic
+      const newDiceNo = Math.floor(Math.random() * 6) + 1;
+      playSound('dice_roll');
+      setDiceRolling(true);
+      await delay(800);
+      
+      dispatch(updateSnakeLadderDiceNo({ diceNo: newDiceNo }));
+      setDiceRolling(false);
+      
+      // Auto-move player after a short delay
+      setTimeout(() => {
+        dispatch(handleSnakeLadderMoveThunk(player, newDiceNo));
+      }, 500);
+      
+      return;
+    }
+    
+    // Original Ludo logic
     const newDiceNo = Math.floor(Math.random() * 6) + 1;
     // const newDiceNo = 6;
     playSound('dice_roll');
@@ -250,7 +304,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   pileIcon: {
-    width: 35,
+    width: 30,
     height: 35,
   },
   diceContainer: {

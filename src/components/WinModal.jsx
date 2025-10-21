@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { resetGame } from '../redux/reducers/gameSlice';
+import { resetGame } from '../redux/ludo/ludoSlice';
 import { playSound } from '../helpers/SoundUtility';
 import { resetAndNavigate } from '../helpers/NavigationUtil';
-import { announceWinner } from '../redux/reducers/gameSlice';
+import { announceWinner } from '../redux/ludo/ludoSlice';
 import Modal from 'react-native-modal';
 import LinearGradient from 'react-native-linear-gradient';
 import LottieView from 'lottie-react-native';
