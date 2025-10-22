@@ -1,7 +1,7 @@
 import { StyleSheet, ImageBackground } from 'react-native'
 import React from 'react'
 import BG from '../assets/images/bg.png'
-import {deviceWidth, deviceHeight} from '../constants/Scaling'
+import {deviceWidth} from '../constants/Scaling'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Wrapper = ({children, style}) => {
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   SafeAreaView:{
-    height: deviceHeight,
+    flex: 1,
     width: deviceWidth,
     justifyContent: 'center',
     alignItems: 'center'

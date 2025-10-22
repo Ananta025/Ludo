@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   lottieContainer: {
     position: 'absolute',
-    bottom: deviceHeight * 0.07,
+    bottom: deviceHeight * 0.05,
     alignItems: 'center',
     zIndex: -1,
   },
