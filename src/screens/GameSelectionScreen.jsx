@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Wrapper from '../components/Wrapper';
 import { deviceHeight, deviceWidth } from '../constants/Scaling';
 import GradientButton from '../components/GradientButton';
@@ -8,8 +8,11 @@ import { playSound } from '../helpers/SoundUtility';
 import Logo from '../assets/images/logo.png';
 import LottieView from 'lottie-react-native';
 import LottieAnimation from '../assets/animation/lottie.json';
+import { useIsFocused } from '@react-navigation/native'
 
 const GameSelectionScreen = () => {
+
+  const isFocused = useIsFocused();
 
   const handleLudoPress = useCallback(() => {
     playSound('ui');
@@ -20,6 +23,12 @@ const GameSelectionScreen = () => {
     playSound('ui');
     navigate('SnakeLadder');
   }, []);
+
+  useEffect(() => {
+    if(isFocused){
+      playSound('home', true);
+    }
+  }, [isFocused]);
 
   return (
     <Wrapper style={styles.container}>
@@ -72,7 +81,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between', // ensures footer stays bottom
-    paddingVertical: 20,
+    paddingVertical: 10,
   },
   content: {
     alignItems: 'center',
@@ -100,7 +109,7 @@ const styles = StyleSheet.create({
   },
   lottieContainer: {
     position: 'absolute',
-    bottom: deviceHeight * 0.12,
+    bottom: deviceHeight * 0.07,
     alignItems: 'center',
     zIndex: -1,
   },
@@ -111,7 +120,7 @@ const styles = StyleSheet.create({
   footerText: {
     textAlign: 'center',
     color: 'rgba(255, 255, 255, 0.7)',
-    fontSize: 14,
+    fontSize: 12,
     fontStyle: 'italic',
     fontWeight: 'bold',
   },

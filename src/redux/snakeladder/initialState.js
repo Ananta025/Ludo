@@ -31,11 +31,11 @@ export const snakeLadderInitialState = {
   ],
   
   ladders: [
-    { bottom: 3, top: 22 },
+    { bottom: 2, top: 23 },
     { bottom: 15, top: 47 },
     { bottom: 77, top: 96 },
     { bottom: 22, top: 43 },
-    { bottom: 33, top: 51 },
+    { bottom: 32, top: 51 },
     { bottom: 87, top: 93 },
     { bottom: 67, top: 73 },
     { bottom: 17, top: 36 },

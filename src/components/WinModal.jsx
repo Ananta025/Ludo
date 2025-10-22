@@ -14,6 +14,7 @@ import GradientButton from './GradientButton';
 import HeartGirl from '../assets/animation/girl.json';
 import Pile from './Pile';
 import { colorPlayer } from '../helpers/PlotData';
+import { deviceHeight, deviceWidth } from '../constants/Scaling';
 
 
 const WinModal = ({ winner }) => {
@@ -107,7 +108,7 @@ export default WinModal;
 const styles = StyleSheet.create({
   gradientContainer: {
     borderRadius: 20,
-    padding: 20,
+    padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
     width: '96%',
@@ -134,21 +135,20 @@ const styles = StyleSheet.create({
   },
   congratsText: {
     fontSize: 18,
-    color: 'white',
+    color: 'yellow',
     fontFamily: 'philosopher-Bold',
     marginTop: 10,
   },
   trophyAnimation: {
     height: 200,
     width: 200,
-    marginTop: 20,
+    marginTop: 10,
   },
   fireworkAnimation: {
-    height: 200,
-    width: 500,
+    height: deviceHeight * 0.4,
+    width: deviceWidth,
     position: 'absolute',
-    zIndex: -5,
-    marginTop: 20,
+    zIndex: 20,
     pointerEvents: 'none',
   },
   girlAnimation: {

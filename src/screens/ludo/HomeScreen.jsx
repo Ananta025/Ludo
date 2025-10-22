@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Alert, Animated, Pressable } from 'react-native'
+import { StyleSheet, View, Image, Alert, Animated, Pressable } from 'react-native'
 import React, { useCallback, useEffect, useRef } from 'react'
 import Wrapper from '../../components/Wrapper'
 import Logo from '../../assets/images/logo.png'
@@ -153,7 +153,6 @@ const HomeScreen = () => {
         </Pressable>
       </Animated.View>
 
-      <Text style={styles.artist}>Designed by - Ananta</Text>
     </Wrapper>
   )
 }
@@ -164,7 +163,7 @@ const styles = StyleSheet.create({
     mainContainer:{
         flex: 1,
         justifyContent: 'space-between',
-        paddingVertical: 15,
+        paddingVertical: 5,
     },
     imgContainer:{
         width: deviceWidth * 0.6,
@@ -183,25 +182,17 @@ const styles = StyleSheet.create({
     buttonsContainer: {
         flex: 1,
         alignItems: 'center',
-        paddingHorizontal: 20,
         gap: 12,
-    },
-    artist: {
-        alignSelf: 'center',
-        color: 'white',
-        fontWeight: 'bold',
-        opacity: 0.7,
-        fontStyle: 'italic'
     },
     witchContainer:{
         position: 'absolute',
-        bottom: deviceHeight * 0.08,
+        bottom: deviceHeight * 0.05,
         alignItems: 'center',
         zIndex: -1,
     },
     witch:{
-        height: Math.min(250, deviceHeight * 0.25),
-        width: Math.min(250, deviceHeight * 0.25),
+        height: deviceHeight * 0.25,
+        width: deviceHeight * 0.25,
         transform: [{rotate: '25deg'}]
     }
 })

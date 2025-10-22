@@ -13,7 +13,7 @@ import BoardSquare from './BoardSquare'
 import { deviceWidth } from '../../constants/Scaling'
 
 // Import snake and ladder images
-import SnakeImage from '../../assets/images/snakeladder/snake1.png'
+import SnakeImage from '../../assets/images/snakeladder/snake.png'
 import LadderImage from '../../assets/images/snakeladder/ladder.png'
 
 const Board = () => {
@@ -246,11 +246,11 @@ const styles = StyleSheet.create({
   snakeOverlayImage: {
     width: '100%',
     height: '100%',
-    opacity: 0.7,
+    opacity: 0.8,
   },
   ladderOverlayImage: {
     width: '100%',
     height: '100%',
-    opacity: 0.7,
+    opacity: 0.8,
   },
 })

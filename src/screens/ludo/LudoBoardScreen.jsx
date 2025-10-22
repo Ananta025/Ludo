@@ -159,8 +159,7 @@ const styles = StyleSheet.create({
   ludoBoard: {
     height: '100%',
     width: '100%',
-    // resizeMode: 'contain',
-    padding: 10,
+    paddingVertical: 10,
     alignSelf: 'center',
   },
   menuIcon: {
@@ -169,8 +168,8 @@ const styles = StyleSheet.create({
     left: 24,
   },
   menuIconImage: {
-    width: 35,
-    height: 35,
+    width: 30,
+    height: 30,
   },
   startImage: {
     position: 'absolute',
@@ -179,7 +178,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 5,
   },
   plotContainer: {
     flexDirection: 'row',

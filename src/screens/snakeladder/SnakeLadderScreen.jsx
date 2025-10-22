@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   },
   menuIcon: {
     position: 'absolute',
-    top: 55,
+    top: 45,
     left: 15,
     zIndex: 100,
   },
@@ -162,6 +162,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 15,
-    height: 80, // Fixed height for dice rows
+    height: 80, 
   },
 });
